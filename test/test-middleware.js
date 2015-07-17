@@ -45,6 +45,26 @@ describe('middleware' , function() {
                     foo: 'bar'
                 },
                 {
+                    path: 'PUT /users/:user',
+                    handler: function(req, res) {
+                        res.send({
+                            user: req.params.user,
+                            foo: req.route.config.foo
+                        });
+                    },
+                    foo: 'bar'
+                },
+                {
+                    path: 'DELETE /users/:user',
+                    handler: function(req, res) {
+                        res.send({
+                            user: req.params.user,
+                            foo: req.route.config.foo
+                        });
+                    },
+                    foo: 'bar'
+                },
+                {
                     path: 'POST /users/:user/picture',
                     handler: function(req, res) {
                         res.end('User profile picture updated!');
@@ -142,8 +162,38 @@ describe('middleware' , function() {
         server.close();
     });
 
-    it('should support match() and invokeHandler() middleware', function(done) {
+    it('should support match() and invokeHandler() middleware using GET', function(done) {
         jsonRequest('/users/123', 'GET', function(err, response, result) {
+            if (err) {
+                return done(err);
+            }
+
+            expect(result).to.deep.equal({
+                user: '123',
+                foo: 'bar'
+            });
+
+            done();
+        });
+    });
+
+    it('should support match() and invokeHandler() middleware using PUT', function(done) {
+        jsonRequest('/users/123', 'PUT', function(err, response, result) {
+            if (err) {
+                return done(err);
+            }
+
+            expect(result).to.deep.equal({
+                user: '123',
+                foo: 'bar'
+            });
+
+            done();
+        });
+    });
+
+    it('should support match() and invokeHandler() middleware using DELETE', function(done) {
+        jsonRequest('/users/123', 'PUT', function(err, response, result) {
             if (err) {
                 return done(err);
             }
